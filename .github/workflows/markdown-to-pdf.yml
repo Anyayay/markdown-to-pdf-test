@@ -21,23 +21,17 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Convert Markdown to PDF - Folder 1
-      run: npm run convert-to-pdf
+    - name: Convert Markdown to PDF
+      run: node convert-to-pdf.js
       env:
         SOURCE_FOLDER: ./in-1
         OUTPUT_FOLDER: ./out-1
-
-    - name: Convert Markdown to PDF - Folder 2
-      run: npm run convert-to-pdf
-      env:
-        SOURCE_FOLDER: ./in-2
-        OUTPUT_FOLDER: ./out-2
 
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: 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
       with:
         tag_name: ${{ github.sha }}
         release_name: Release ${{ github.sha }}
@@ -48,11 +42,9 @@ jobs:
       id: upload_assets
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: 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
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: |
-          ./out-1
-          ./out-2
+        asset_path: ./path/to/your/pdf/folder
         asset_name: Your_PDF_Files
         asset_content_type: application/pdf
