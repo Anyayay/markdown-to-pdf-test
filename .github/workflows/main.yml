@@ -1,0 +1,50 @@
+name: Markdown to PDF
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Convert Markdown to PDF
+      run: node convert-to-pdf.js
+      env:
+        SOURCE_FOLDER: ./in-1
+        OUTPUT_FOLDER: ./out-1
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: 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
+      with:
+        tag_name: ${{ github.sha }}
+        release_name: Release ${{ github.sha }}
+        draft: false
+        prerelease: false
+
+    - name: Upload PDFs to Release
+      id: upload_assets
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: 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
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./path/to/your/pdf/folder
+        asset_name: Your_PDF_Files
+        asset_content_type: application/pdf
