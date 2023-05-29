@@ -13,19 +13,17 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'
-
-    - name: Install dependencies
-      run: npm install
+    - name: Setup Pandoc
+      run: sudo apt-get update && sudo apt-get install -y pandoc
 
     - name: Convert Markdown to PDF
-      run: node convert-to-pdf.js
-      env:
-        SOURCE_FOLDER: ./path/to/your/markdown/folder
-        OUTPUT_FOLDER: ./path/to/your/pdf/folder
+      run: |
+        mkdir output_folder
+        for folder in source_folder1 source_folder2; do
+          for file in $folder/*.md; do
+            pandoc "$file" -o "output_folder/$(basename "${file%.*}").pdf"
+          done
+        done
 
     - name: Create Release
       id: create_release
@@ -45,6 +43,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./path/to/your/pdf/folder
-        asset_name: Your_PDF_Files
+        asset_path: ./output_folder
+        asset_name: PDF_Files
         asset_content_type: application/pdf
