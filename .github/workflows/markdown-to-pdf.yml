@@ -24,14 +24,14 @@ jobs:
     - name: Convert Markdown to PDF
       run: node convert-to-pdf.js
       env:
-        SOURCE_FOLDER: ./in-1
-        OUTPUT_FOLDER: ./out-1
+        SOURCE_FOLDER: ./path/to/your/markdown/folder
+        OUTPUT_FOLDER: ./path/to/your/pdf/folder
 
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
       env:
-        GITHUB_TOKEN: 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
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ github.sha }}
         release_name: Release ${{ github.sha }}
@@ -42,7 +42,7 @@ jobs:
       id: upload_assets
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: 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
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./path/to/your/pdf/folder
